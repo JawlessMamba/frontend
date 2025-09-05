@@ -198,7 +198,7 @@ export default function SignIn() {
                       <Mail className="absolute left-4 top-4 text-blue-500 group-focus-within:text-blue-600 transition-colors z-10" size={20} />
                       <input
                         type="email"
-                        placeholder="you@engro.com"
+                        placeholder="you@ehive.com"
                         {...register("email", { required: true })}
                         className="w-full pl-12 pr-4 py-3.5 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition-all duration-300 bg-white/90 text-base placeholder-slate-400"
                         required
