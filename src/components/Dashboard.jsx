@@ -12,7 +12,6 @@ import { useGetAllAssetTransfers } from '../../api/client/assettransfer';
 import { useAllCategories } from '../../api/client/category';
 
 function Dashboard() {
-  const [userRole, setUserRole] = useState("admin");
   
   // Use the actual hooks for data fetching
   const { 
@@ -307,8 +306,6 @@ if (loading) {
       <Header 
         title="All Assets. One Hive."
         subtitle="Welcome Admin"
-        userRole={userRole}
-        setUserRole={setUserRole}
       />
       
       <Navigation currentPage="dashboard" />

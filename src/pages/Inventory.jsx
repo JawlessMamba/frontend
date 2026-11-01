@@ -26,7 +26,6 @@ import { toast } from 'react-toastify';
 function Inventory() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [userRole, setUserRole] = useState('admin');
   const [editingAsset, setEditingAsset] = useState(null);
   const [transferringAsset, setTransferringAsset] = useState(null);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
@@ -85,6 +84,8 @@ function Inventory() {
 
   const { markSurplus } = useMarkAssetSurplus();
   const { data: user } = useGetCurrentUser();
+  // Role comes from the logged-in account; default to least privilege
+  const userRole = user?.role ?? 'user';
   const { updateAsset, isLoading: updateLoading } = useUpdateAsset();
   const { combinedOptions: categories } = useAllCategories([
     "department",
@@ -559,7 +560,6 @@ function Inventory() {
         title="Inventory Management"
         subtitle={`Manage all ${total} IT assets`}
         userRole={userRole}
-        setUserRole={setUserRole}
       />
       <Navigation />
       

@@ -20,12 +20,16 @@ export function useSignUp() {
 }
 
 export function useSignIn() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (data) => {
       const res = await api.post(API_ROUTE.user.signIn, data);
       return res.data;
     },
     onSuccess: (data) => {
+      // Drop everything cached for the previous account (incl. currentUser/role)
+      queryClient.clear();
       toast.success(" Login successful");
       localStorage.setItem("token", data.token);
     },
@@ -42,6 +46,8 @@ export const useGetCurrentUser = () => {
       const res = await api.get("/user/getuser");
       return res.data;
     },
+    retry: false,
+    staleTime: 5 * 60 * 1000,
   });
 };
 

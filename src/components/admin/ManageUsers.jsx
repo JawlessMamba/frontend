@@ -35,7 +35,7 @@ export default function ManageUsers({ onBack }) {
   };
 
   const validatePassword = (password) => {
-    const minLength = password.length >= 6;
+    const minLength = password.length >= 8;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumber = /\d/.test(password);
@@ -63,7 +63,7 @@ export default function ManageUsers({ onBack }) {
 
     // Validate password if provided
     if (data.password && !validatePassword(data.password)) {
-      setCreateUserError("Password must be at least 6 characters long with 1 uppercase, 1 lowercase, 1 number, and 1 special character");
+      setCreateUserError("Password must be at least 8 characters long with 1 uppercase, 1 lowercase, 1 number, and 1 special character");
       return;
     }
 
@@ -98,7 +98,7 @@ export default function ManageUsers({ onBack }) {
     }
 
     if (!validatePassword(newPassword)) {
-      setPasswordError("Password must be at least 6 characters long with 1 uppercase, 1 lowercase, 1 number, and 1 special character");
+      setPasswordError("Password must be at least 8 characters long with 1 uppercase, 1 lowercase, 1 number, and 1 special character");
       return;
     }
 

@@ -52,7 +52,6 @@ const COLOR_VARIANTS = {
 };
 
 function Categories() {
-  const [userRole, setUserRole] = useState("admin");
   const [selectedCategory, setSelectedCategory] = useState("hardware_type");
   const [newCategoryValue, setNewCategoryValue] = useState("");
 
@@ -137,8 +136,6 @@ const handleDeleteCategory = (id) => {
       <Header
         title="Category Management"
         subtitle="Manage all asset categories"
-        userRole={userRole}
-        setUserRole={setUserRole}
       />
       <Navigation />
 

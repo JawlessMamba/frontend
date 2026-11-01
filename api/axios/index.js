@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:2300/",
+  // Docker build sets VITE_API_URL=/api/ (proxied by nginx); local dev talks to the backend directly
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:2300/",
   headers: {
     "Content-Type": "application/json",
   },
@@ -26,6 +27,14 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Invalid/expired token: clear session and send user back to login
+    if (error.response?.status === 401 && localStorage.getItem("token")) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+    }
     return Promise.reject(error);
   }
 );

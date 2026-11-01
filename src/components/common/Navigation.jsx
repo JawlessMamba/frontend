@@ -17,6 +17,7 @@ import {
   ChevronDown,
   Users // NEW ICON FOR MANAGE USERS
 } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useGetCurrentUser } from "../../../api/client/user";
 
 const ICONS = {
@@ -164,6 +165,7 @@ DropdownItem.displayName = 'DropdownItem';
 function Navigation() {
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: user } = useGetCurrentUser();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -184,9 +186,12 @@ function Navigation() {
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    // Forget the logged-out user's cached data so the next login starts clean
+    queryClient.clear();
     navigate("/login");
     setIsUserDropdownOpen(false);
-  }, [navigate]);
+  }, [navigate, queryClient]);
 
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(prev => !prev);

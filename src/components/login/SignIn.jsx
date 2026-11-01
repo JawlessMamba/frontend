@@ -1,26 +1,20 @@
 import { useForm } from "react-hook-form";
+import { useSignIn } from "../../../api/client/user";
 import { useNavigate } from "react-router-dom";
 import { 
   Eye, EyeOff, Lock, Mail, Zap, Shield, Star, Sparkles, Trophy, Rocket, Heart, Award, 
   Laptop, Phone, Smartphone, Cable, Monitor, Server, Wifi, HardDrive, Mouse, Keyboard,
   Database, Router, Cpu, MemoryStick, Printer, Camera, Headphones, Gamepad2,
-  Flower, Leaf, Bird, Trees, Feather, AlertCircle
+  Flower, Leaf, Bird, Trees, Feather
 } from "lucide-react";
 import { useState } from "react";
 
 export default function SignIn() {
   const { register, handleSubmit, reset } = useForm();
+  const mutation = useSignIn();
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  // Mock authentication credentials
-  const DEMO_CREDENTIALS = {
-    email: "admin@ehive.com",
-    password: "admin123"
-  };
 
   // Enhanced floating elements with nature and hardware icons
   const floatingElements = [
@@ -69,67 +63,13 @@ export default function SignIn() {
     { Icon: Star, delay: 26, duration: 21, size: 22, color: "text-yellow-500" }
   ];
 
-  // Mock authentication function
-  const mockSignIn = async (email, password) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
-          // Generate a fake JWT token
-          const fakeToken = btoa(JSON.stringify({
-            user: { 
-              id: 1, 
-              email: email, 
-              name: "Demo Admin",
-              role: "admin"
-            },
-            exp: Date.now() + (24 * 60 * 60 * 1000), // 24 hours
-            iat: Date.now()
-          }));
-          
-          resolve({
-            token: fakeToken,
-            user: {
-              id: 1,
-              email: email,
-              name: "Demo Admin",
-              role: "admin"
-            }
-          });
-        } else {
-          reject(new Error("Invalid credentials"));
-        }
-      }, 1500); // Simulate network delay
+  const onSubmit = (data) => {
+    mutation.mutate(data, {
+      onSuccess: (res) => {
+        navigate("/");
+        reset();
+      },
     });
-  };
-
-  const onSubmit = async (data) => {
-    setIsLoading(true);
-    setError("");
-    
-    try {
-      const response = await mockSignIn(data.email, data.password);
-      
-      // Store the fake token in localStorage (for demo purposes)
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
-      
-      // Navigate to dashboard
-      navigate("/");
-      reset();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Auto-fill demo credentials
-  const fillDemoCredentials = () => {
-    const emailInput = document.querySelector('input[type="email"]');
-    const passwordInput = document.querySelector('input[type="password"]');
-    
-    emailInput.value = DEMO_CREDENTIALS.email;
-    passwordInput.value = DEMO_CREDENTIALS.password;
   };
 
   return (
@@ -236,24 +176,6 @@ export default function SignIn() {
             {/* Main Form Container */}
             <div className="relative">
               
-              {/* Demo Mode Notice */}
-              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl">
-                <div className="flex items-center space-x-2 text-blue-800 text-sm">
-                  <AlertCircle size={16} />
-                  <span className="font-medium">Demo Mode</span>
-                </div>
-                <p className="text-blue-700 text-xs mt-1">
-                  Use: <span className="font-mono bg-white px-1 rounded">admin@ehive.com</span> / <span className="font-mono bg-white px-1 rounded">admin123</span>
-                </p>
-                <button
-                  type="button"
-                  onClick={fillDemoCredentials}
-                  className="mt-2 text-blue-600 hover:text-blue-700 text-xs underline"
-                >
-                  Click to auto-fill demo credentials
-                </button>
-              </div>
-              
               {/* Glassmorphism Form */}
               <div className="relative bg-white/80 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/50">
                 
@@ -269,14 +191,6 @@ export default function SignIn() {
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   
-                  {/* Error Message */}
-                  {error && (
-                    <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center space-x-2">
-                      <AlertCircle size={16} />
-                      <span>{error}</span>
-                    </div>
-                  )}
-                  
                   {/* Email Input */}
                   <div className="relative group">
                     <div className="absolute -inset-1 bg-gradient-to-r from-blue-400/30 to-indigo-400/30 rounded-2xl blur-sm opacity-0 group-focus-within:opacity-100 transition duration-500"></div>
@@ -284,7 +198,7 @@ export default function SignIn() {
                       <Mail className="absolute left-4 top-4 text-blue-500 group-focus-within:text-blue-600 transition-colors z-10" size={20} />
                       <input
                         type="email"
-                        placeholder="admin@ehive.com"
+                        placeholder="you@ehive.com"
                         {...register("email", { required: true })}
                         className="w-full pl-12 pr-4 py-3.5 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition-all duration-300 bg-white/90 text-base placeholder-slate-400"
                         required
@@ -299,7 +213,7 @@ export default function SignIn() {
                       <Lock className="absolute left-4 top-4 text-blue-500 group-focus-within:text-blue-600 transition-colors z-10" size={20} />
                       <input
                         type={showPassword ? "text" : "password"}
-                        placeholder="admin123"
+                        placeholder="Your Hive Key"
                         {...register("password", { required: true })}
                         className="w-full pl-12 pr-12 py-3.5 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition-all duration-300 bg-white/90 text-base placeholder-slate-400"
                         required
@@ -319,10 +233,10 @@ export default function SignIn() {
                     <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/40 to-indigo-600/40 rounded-2xl blur-sm opacity-50 group-hover:opacity-75 transition duration-500"></div>
                     <button
                       type="submit"
-                      disabled={isLoading}
+                      disabled={mutation.isPending}
                       className="relative w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white py-3.5 rounded-2xl text-base font-medium transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-70"
                     >
-                      {isLoading ? (
+                      {mutation.isPending ? (
                         <div className="flex items-center justify-center space-x-3">
                           <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                           <span>Entering the HIVE...</span>
